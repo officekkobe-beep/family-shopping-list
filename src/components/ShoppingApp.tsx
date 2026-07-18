@@ -25,7 +25,6 @@ import {
   sortProducts,
 } from "@/lib/csv";
 import {
-  extractionNote,
   initialCategories,
   initialProducts,
   initialStores,
@@ -621,7 +620,6 @@ export function ShoppingApp({ shareKey }: { shareKey: string }) {
             <div className="flex items-end justify-between gap-3">
               <div>
                 <h2 className="text-2xl font-bold">買うものを選ぶ</h2>
-                <p className="text-sm text-[#667264]">{extractionNote}</p>
               </div>
               <div className="shrink-0 rounded-full bg-[#1d6f42] px-3 py-2 text-sm font-bold text-white">
                 かご {selectedCount}件
