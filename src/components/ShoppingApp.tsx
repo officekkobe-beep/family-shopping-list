@@ -137,6 +137,10 @@ export function ShoppingApp({ shareKey }: { shareKey: string }) {
   const [adminStore, setAdminStore] = useState("すべて");
   const [lastSyncNote, setLastSyncNote] = useState("");
 
+  useEffect(() => {
+    window.localStorage.setItem("family-shopping-list:last-share-path", window.location.pathname);
+  }, [shareKey]);
+
   const productViews = useMemo(
     () => hydrateProducts(products, categories, stores),
     [products, categories, stores],

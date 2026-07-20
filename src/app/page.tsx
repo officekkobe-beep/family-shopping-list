@@ -1,6 +1,22 @@
+"use client";
+
+import { useEffect } from "react";
 import Link from "next/link";
 
+const savedSharePathKey = "family-shopping-list:last-share-path";
+
+function isSharePath(value: string | null): value is string {
+  return Boolean(value && /^\/f\/[^/]+$/.test(value));
+}
+
 export default function Home() {
+  useEffect(() => {
+    const savedPath = window.localStorage.getItem(savedSharePathKey);
+    if (isSharePath(savedPath)) {
+      window.location.replace(savedPath);
+    }
+  }, []);
+
   return (
     <main className="flex min-h-dvh items-center justify-center bg-[#f7f8f4] px-6 text-[#17211b]">
       <div className="max-w-md text-center">
