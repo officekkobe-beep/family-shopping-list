@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "家族の買い物リスト",
   description: "家族で共有して使う買い物リスト",
-  manifest: "/manifest.webmanifest",
+  manifest: "/manifest.webmanifest?v=share-start-v2",
   appleWebApp: {
     capable: true,
     title: "家族の買い物リスト",
