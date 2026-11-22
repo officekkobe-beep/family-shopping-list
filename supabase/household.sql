@@ -87,6 +87,8 @@ create index if not exists household_periods_period_month_idx
   on public.household_periods(period_month);
 create index if not exists household_periods_status_month_idx
   on public.household_periods(status, period_month);
+create index if not exists household_periods_rule_snapshot_idx
+  on public.household_periods(rule_id_snapshot);
 create index if not exists household_settlements_date_idx
   on public.household_settlements(settlement_date, created_at);
 
