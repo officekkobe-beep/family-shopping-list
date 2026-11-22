@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  ArrowLeft,
   CalendarCheck,
   CheckCircle2,
   ChevronRight,
@@ -47,6 +46,11 @@ function todayLocal() {
 function numberValue(value: string) {
   const parsed = Number(value.replace(/,/g, ""));
   return Number.isFinite(parsed) && parsed >= 0 ? Math.round(parsed) : 0;
+}
+
+function signedNumberValue(value: string) {
+  const parsed = Number(value.replace(/,/g, ""));
+  return Number.isFinite(parsed) ? Math.round(parsed) : 0;
 }
 
 function monthInputValue(month: string) {
@@ -132,7 +136,9 @@ export function HouseholdApp({ shareKey }: { shareKey: string }) {
     const latestConfirmed = confirmed.at(-1);
     const suggestedMonth =
       earliestDraft?.period_month ||
-      (latestConfirmed ? nextMonth(latestConfirmed.period_month) : monthStart());
+      (latestConfirmed
+        ? nextMonth(latestConfirmed.period_month)
+        : nextSettings?.opening_month || monthStart());
 
     setSelectedMonth((current) => current || suggestedMonth);
 
@@ -208,7 +214,9 @@ export function HouseholdApp({ shareKey }: { shareKey: string }) {
 
   const nextUnconfirmedMonth =
     earliestDraft?.period_month ||
-    (latestConfirmed ? nextMonth(latestConfirmed.period_month) : monthStart());
+    (latestConfirmed
+      ? nextMonth(latestConfirmed.period_month)
+      : settings?.opening_month || monthStart());
 
   useEffect(() => {
     if (unsettled.amount > 0 && !settlementAmount) {
@@ -352,7 +360,7 @@ export function HouseholdApp({ shareKey }: { shareKey: string }) {
     }
     const { error } = await supabase
       .from("household_settings")
-      .update({ opening_budget_carry_yen: numberValue(openingCarry) })
+      .update({ opening_budget_carry_yen: signedNumberValue(openingCarry) })
       .eq("id", "default");
     if (error) {
       showMessage("開始残高を保存できませんでした。");
