@@ -1,19 +1,14 @@
-import Link from "next/link";
-
 export default function Home() {
   return (
     <main className="flex min-h-dvh items-center justify-center bg-[#f7f8f4] px-6 text-[#17211b]">
       <div className="max-w-md text-center">
-        <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-[#1d6f42] text-3xl font-bold text-white">
-          買
+        <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-[#1d6f42] text-2xl font-bold text-white">
+          家
         </div>
-        <h1 className="mb-3 text-2xl font-bold">家族の買い物リスト</h1>
-        <p className="mb-6 text-base leading-7 text-[#667264]">
-          家族専用URLから利用する買い物リストです。共有URLはこのページには表示しません。
+        <h1 className="mb-3 text-2xl font-bold">家族アプリ</h1>
+        <p className="text-base leading-7 text-[#667264]">
+          家族専用の共有URLから利用してください。共有URLはこのページには表示しません。
         </p>
-        <Link className="inline-flex min-h-11 items-center justify-center rounded-lg border border-[#d6ddd2] bg-white px-5 font-bold" href="/">
-          URLを確認してください
-        </Link>
       </div>
     </main>
   );
