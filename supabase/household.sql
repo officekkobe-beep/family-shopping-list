@@ -4,7 +4,7 @@
 create table if not exists public.household_settings (
   id text primary key default 'default',
   opening_month date not null,
-  opening_budget_carry_yen integer not null default 0 check (opening_budget_carry_yen >= 0),
+  opening_budget_carry_yen integer not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   constraint household_settings_singleton check (id = 'default'),
