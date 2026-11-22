@@ -1,34 +1,41 @@
-# 家族の買い物リスト
+# 家族アプリ
 
-家族で同じ専用URLを開いて使う、スマートフォン向けの買い物リストWebアプリです。ログイン、暗証番号、数量、価格、購入履歴はありません。
+家族で同じ専用URLを開いて使う、スマートフォン向けの共有Webアプリです。
 
-## 主な機能
+現在の機能:
+- 買い物
+- 家計
 
-- 「選ぶ」「かご」「コピー」「管理」の下部ナビゲーション
+共有URL直下では家族用ホームを表示し、使う機能を選びます。
+
+## 買い物
+
+- 「選ぶ」「かご」「コピー」「管理」
 - 商品行全体のタップで買う予定を切り替え
 - 買い物かごで購入済みにすると即時非表示
 - 直前の購入済み操作を「元に戻す」
-- 店舗別、カテゴリー別のコピー
-- 商品、カテゴリー、店舗の管理
-- CSV出力とCSV全件上書き
+- 店舗別・カテゴリー別コピー
+- 商品・カテゴリー・店舗管理
+- CSV出力・CSV全件上書き
 - Supabase Realtimeによる家族端末間同期
-- PWA、robots noindex対応
 
-## MHT移行結果
+商品件数は本番データを正とし、READMEには固定件数を持ちません。
 
-MHTファイルから確実に抽出できた初期データを同梱しています。
+## 家計
 
-- 商品: 13件
-- カテゴリー: 13件
-- 店舗: 7件
-- 買う予定: 13件
-- 重複: 0件
-
-画面統計では全134件、未選択121件が確認できましたが、MHT内に未選択121件の商品行データは含まれていなかったため、推測補完はしていません。
+- 1か月単位で未確定データを入力
+- けんじ支払額、あさみのデビット・現金を分けて入力
+- 負担割合に基づく本来負担額を自動計算
+- 確定後は費用・負担割合・計算結果を変更不可
+- 未精算残高を表示
+- 任意タイミングで全額・一部精算
+- 予算上限との差額を「予算繰越残高」として累積
+- 負担割合・月上限は未確定月以降から変更可能
+- 精算履歴を保持
 
 ## 環境変数
 
-`.env.local` を作成します。
+`.env.local`:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
@@ -36,9 +43,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-legacy-anon-jwt-key
 FAMILY_SHARE_KEY=replace-with-a-random-32-plus-character-share-key
 ```
 
-`FAMILY_SHARE_KEY` は32文字以上の推測されにくい文字列にしてください。これはサーバー側だけで使います。`NEXT_PUBLIC_FAMILY_SHARE_KEY` は設定しないでください。
+`FAMILY_SHARE_KEY` はサーバー側だけで使います。
+`NEXT_PUBLIC_FAMILY_SHARE_KEY` は設定しません。
 
-共有URLは次の形です。
+共有URL:
 
 ```text
 https://xxxxx.vercel.app/f/<FAMILY_SHARE_KEY>
@@ -46,51 +54,32 @@ https://xxxxx.vercel.app/f/<FAMILY_SHARE_KEY>
 
 ## Supabase設定
 
-1. Supabase Dashboardでプロジェクトを作成します。
-2. Project Settings > API で Project URL と legacy anon JWT key を確認します。
-3. SQL Editorで `supabase/schema.sql` を実行します。
-4. SQL Editorで次を実行し、アプリと同じ共有キーをDBへ登録します。
+1. `supabase/schema.sql` を実行
+2. `private.app_config` に `family_share_key` を登録
+3. `supabase/seed.sql` を実行
+4. `supabase/household.sql` を実行
 
-```sql
-insert into private.app_config(key, value)
-values ('family_share_key', 'replace-with-a-random-32-plus-character-share-key')
-on conflict (key) do update set value = excluded.value;
-```
+家計テーブルも既存と同じ共有キーRLSで保護します。
 
-5. SQL Editorで `supabase/seed.sql` を実行します。
+Realtimeは既存の `shopping_events` を変更通知専用として使い、通知受信後に共有キー付きREST/RPCで再取得します。実データのテーブルは直接購読しません。
 
-Realtime publication は `shopping_events` のみです。`categories`、`stores`、`products` は直接購読しません。実データは共有キー付きREST/RPCで再取得します。
+## セキュリティ
 
-同期の調査が必要なときだけ、共有URLの末尾に `?debugSync=1` を付けてブラウザの開発者ツールを開きます。Realtime購読状態、通知受信、再取得理由を確認できます。通常の本番利用では同期ログを出力しません。
+- 公開テーブルはRLS有効
+- REST/RPCは `x-family-share-key` をDB側で検証
+- service role keyはブラウザやVercel公開環境へ出さない
+- 確定済み家計期間はDBトリガーでも更新・削除を拒否
+- 精算履歴は更新・削除不可
+- 共有キーはクライアントバンドルへ直接埋め込まない
 
-## セキュリティ構成
+## Vercel
 
-- `categories`、`stores`、`products` はRLS有効
-- REST/RPCは `x-family-share-key` ヘッダーをDB側で検証
-- CSV全件上書きRPCもDB側で共有キーを検証
-- `shopping_events` は中身を持たない変更通知だけをRealtime配信
-- Supabase service role key はブラウザにもVercel環境変数にも設定しません
-- 共有キーはクライアントバンドルへ入れません
+GitHubのproduction branchへ反映すると、Git連携済みVercelが自動デプロイします。
 
-## Vercel公開
-
-1. GitHubへ `family-shopping-list` をpushします。
-2. VercelでNext.jsプロジェクトとしてImportします。
-3. Root Directory は、このフォルダをリポジトリ直下に置くなら未設定です。親フォルダごとpushする場合は `family-shopping-list` を指定します。
-4. Environment Variables に `.env.local` と同じ3項目を設定します。
-5. Deployします。
-6. 家族には `/f/<FAMILY_SHARE_KEY>` のURLだけを共有します。
-
-## ローカル実行
+## ローカル確認
 
 ```bash
 npm install
-npm run dev
-```
-
-確認:
-
-```bash
 npm run lint
 npm run build
 ```

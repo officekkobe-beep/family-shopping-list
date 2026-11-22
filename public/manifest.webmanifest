@@ -1,7 +1,7 @@
 {
-  "name": "家族の買い物リスト",
-  "short_name": "買い物リスト",
-  "description": "家族で共有して使う買い物リスト",
+  "name": "家族アプリ",
+  "short_name": "家族アプリ",
+  "description": "家族で共有して使う生活アプリ",
   "id": "/",
   "start_url": "/f/motoshiro-family-shopping-list-2026",
   "scope": "/",
