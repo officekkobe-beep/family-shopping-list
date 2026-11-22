@@ -13,12 +13,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "家族の買い物リスト",
-  description: "家族で共有して使う買い物リスト",
+  title: "家族アプリ",
+  description: "家族で共有して使う生活アプリ",
   manifest: "/manifest.webmanifest?v=share-start-v2",
   appleWebApp: {
     capable: true,
-    title: "家族の買い物リスト",
+    title: "家族アプリ",
     statusBarStyle: "default",
   },
   robots: {
