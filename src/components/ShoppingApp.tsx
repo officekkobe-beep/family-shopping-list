@@ -6,6 +6,7 @@ import {
   ChevronUp,
   Clipboard,
   Database,
+  Home,
   PackagePlus,
   Pencil,
   Plus,
@@ -596,10 +597,21 @@ export function ShoppingApp({ shareKey }: { shareKey: string }) {
       <main className="mx-auto min-h-dvh max-w-3xl pb-[calc(6rem+env(safe-area-inset-bottom))]">
         <div className="sticky top-0 z-20 border-b border-[#dfe5dc] bg-[#f7f8f4]/95 px-4 py-3 backdrop-blur">
           <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs text-[#697568]">家族共有</p>
-              <h1 className="text-xl font-bold">家族の買い物リスト</h1>
-              {lastSyncNote && <p className="mt-1 text-xs text-[#667264]">{lastSyncNote}</p>}
+            <div className="flex min-w-0 items-center gap-3">
+              <button
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#d6ddd2] bg-white"
+                onClick={() => {
+                  window.location.href = `/f/${shareKey}`;
+                }}
+                aria-label="家族アプリへ戻る"
+              >
+                <Home size={19} />
+              </button>
+              <div className="min-w-0">
+                <p className="text-xs text-[#697568]">家族アプリ</p>
+                <h1 className="truncate text-xl font-bold">買い物</h1>
+                {lastSyncNote && <p className="mt-1 truncate text-xs text-[#667264]">{lastSyncNote}</p>}
+              </div>
             </div>
             <div
               className={`rounded-full px-3 py-1 text-xs font-semibold ${
