@@ -119,9 +119,12 @@ begin
     raise exception 'confirmed household period cannot be deleted';
   end if;
 
-  return coalesce(new, old);
+  if tg_op = 'DELETE' then
+    return old;
+  end if;
+  return new;
 end;
-$$;
+$;
 
 revoke all on function public.guard_confirmed_household_period() from public, anon, authenticated;
 
@@ -144,9 +147,12 @@ begin
   ) then
     raise exception 'rule used by a confirmed period is immutable';
   end if;
-  return coalesce(new, old);
+  if tg_op = 'DELETE' then
+    return old;
+  end if;
+  return new;
 end;
-$$;
+$;
 
 revoke all on function public.guard_household_rule_history() from public, anon, authenticated;
 
